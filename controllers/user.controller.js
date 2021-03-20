@@ -1,3 +1,9 @@
+const User = require('../models/user.model.js');
+const config = require('../config/config');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const { NotFoundError } = require('../helpers/utility')
+
 exports.register = async (req, res) => {
 	// Hash password
 	const salt = await bcrypt.genSalt(10);
@@ -42,11 +48,19 @@ exports.login = async (req, res) => {
 		} else {
 			let error_data = {
 				entity: 'User',
-				model_obj: {param: req.params, body: req.body},
+				model_obj: { param: req.params, body: req.body },
 				error_obj: err,
 				error_msg: err.message
 			};
 			res.status(500).send("Error retrieving User");
 		}
 	}
+};
+
+exports.authuseronly = (req, res) => {
+	res.send("Hey, You are authenticated user. So you are authorized to access here.");
+};
+
+exports.adminonly = (req, res) => {
+	res.send("Success. Hello Admin, this route is only for you.");
 };
